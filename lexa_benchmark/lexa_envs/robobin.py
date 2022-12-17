@@ -7,10 +7,10 @@ import numpy as np
 
 import metaworld.envs.mujoco.sawyer_xyz.v1 as sawyer
 from d4rl.kitchen.adept_envs.simulation.renderer import DMRenderer
-from envs.base_envs import BenchEnv
+from lexa_envs.base_envs import BenchEnv
 
 class RoboBinEnv(BenchEnv):
-  def __init__(self, action_repeat, use_goal_idx=False, log_per_goal=False, 
+  def __init__(self, action_repeat, use_goal_idx=False, log_per_goal=False,
                 image_width=64, metric_rew_cap=100000):
     super().__init__(action_repeat)
 

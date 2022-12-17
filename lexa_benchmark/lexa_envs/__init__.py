@@ -1,4 +1,4 @@
-from envs.robobin import RoboBinEnv
-from envs.dmc import DmcEnv
-from envs.kitchen import KitchenEnv
-from envs.multiplexing import MultiplexedEnv, PadActions
+# from .robobin import RoboBinEnv
+from lexa_envs.dmc import DmcEnv
+from lexa_envs.kitchen import KitchenEnv
+from lexa_envs.multiplexing import MultiplexedEnv, PadActions

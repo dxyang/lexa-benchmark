@@ -3,7 +3,7 @@ import gym
 import random
 import itertools
 from itertools import combinations
-from envs.base_envs import BenchEnv
+from lexa_envs.base_envs import BenchEnv
 from d4rl.kitchen.kitchen_envs import KitchenMicrowaveKettleLightTopLeftBurnerV0
 
 
@@ -152,10 +152,10 @@ def get_kitchen_benchmark_goals():
                     'microwave'    :  [22],
                     'kettle'       :  [23, 24, 25]}
 
-    base_task_names = [ 'bottom_burner', 'light_switch', 'slide_cabinet', 
+    base_task_names = [ 'bottom_burner', 'light_switch', 'slide_cabinet',
                         'hinge_cabinet', 'microwave', 'kettle' ]
 
-    
+
     goal_configs = []
     #single task
     for i in range(6):
@@ -164,7 +164,7 @@ def get_kitchen_benchmark_goals():
     #two tasks
     for i,j  in combinations([1,2,3,5], 2) :
       goal_configs.append( [base_task_names[i], base_task_names[j]] )
-    
+
     obs_element_goals = [] ; obs_element_indices = []
     for objects in goal_configs:
         _goal = np.concatenate([object_goal_vals[obj] for obj in objects])
@@ -172,5 +172,5 @@ def get_kitchen_benchmark_goals():
 
         obs_element_goals.append(_goal)
         obs_element_indices.append(_goal_idxs)
-  
+
     return obs_element_goals, obs_element_indices, goal_configs
