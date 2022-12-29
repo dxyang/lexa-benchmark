@@ -6,27 +6,43 @@ from itertools import combinations
 from lexa_envs.base_envs import BenchEnv
 from d4rl.kitchen.kitchen_envs import KitchenMicrowaveKettleLightTopLeftBurnerV0
 
+def goal_to_task_element(goal_idx: int):
+  if goal_idx == 0:
+    return 'bottom left burner' #'bottom_burner'
+  elif goal_idx == 1:
+    return 'light switch' #'light_switch'
+  elif goal_idx == 2:
+    return 'slide cabinet' #'slide_cabinet'
+  elif goal_idx == 3:
+    return 'hinge cabinet' #'hinge_cabinet'
+  elif goal_idx == 4:
+    return 'microwave'
+  elif goal_idx == 5:
+    return 'kettle'
+  else:
+    assert False
 
 class KitchenEnv(BenchEnv):
-  def __init__(self, action_repeat=1, use_goal_idx=False, log_per_goal=False,  control_mode='end_effector', width=64):
+  def __init__(self, action_repeat=1, task_num=0, use_goal_idx=False, log_per_goal=False,  control_mode='end_effector', width=64):
 
     super().__init__(action_repeat, width)
     self.use_goal_idx = use_goal_idx
     self.log_per_goal = log_per_goal
     with self.LOCK:
       self._env =  KitchenMicrowaveKettleLightTopLeftBurnerV0(frame_skip=16, control_mode = control_mode, imwidth=width, imheight=width)
-
+      self._env.TASK_ELEMENTS = [goal_to_task_element(task_num)]
       self._env.sim_robot.renderer._camera_settings = dict(
         distance=1.86, lookat=[-0.3, .5, 2.], azimuth=90, elevation=-60)
 
     self.rendered_goal = False
     self._env.reset()
     self.init_qpos = self._env.sim.data.qpos.copy()
-    self.goal_idx = 0
+    self.goal_idx = task_num
     self.obs_element_goals, self.obs_element_indices, self.goal_configs = get_kitchen_benchmark_goals()
     self.goals = list(range(len(self.obs_element_goals)))
 
   def set_goal_idx(self, idx):
+    assert False
     self.goal_idx = idx
 
   def get_goal_idx(self):
@@ -38,6 +54,7 @@ class KitchenEnv(BenchEnv):
   def _get_obs(self, state):
     image = self._env.render('rgb_array', width=self._env.imwidth, height =self._env.imheight)
     obs = {'image': image, 'state': state, 'image_goal': self.render_goal(), 'goal': self.goal}
+
     if self.log_per_goal:
       for i, goal_idx in enumerate(self.goals):
         # add rewards for all goals
@@ -71,6 +88,7 @@ class KitchenEnv(BenchEnv):
     qpos = self._env.sim.data.qpos.copy()
 
     if len(self.obs_element_indices[goal]) > 9 :
+        import pdb; pdb.set_trace() # why would this happen?
         return  -np.linalg.norm(qpos[self.obs_element_indices[goal]][9:] - self.obs_element_goals[goal][9:])
     else:
         return -np.linalg.norm(qpos[self.obs_element_indices[goal]] - self.obs_element_goals[goal])
@@ -127,12 +145,14 @@ class KitchenEnv(BenchEnv):
     return goal_obs
 
   def reset(self):
-
-    with self.LOCK:
-      state = self._env.reset()
     if not self.use_goal_idx:
       self.goal_idx = np.random.randint(len(self.goals))
+      # print(f"new_goal: {self.goal_idx}")
     self.goal = self.goals[self.goal_idx]
+
+    with self.LOCK:
+      self._env.TASK_ELEMENTS = [goal_to_task_element(self.goal)]
+      state = self._env.reset()
     self.rendered_goal = False
     return self._get_obs(state)
 
@@ -161,9 +181,10 @@ def get_kitchen_benchmark_goals():
     for i in range(6):
       goal_configs.append( [base_task_names[i]])
 
-    #two tasks
-    for i,j  in combinations([1,2,3,5], 2) :
-      goal_configs.append( [base_task_names[i], base_task_names[j]] )
+    # let's just focus on single tasks
+    # two tasks
+    # for i,j  in combinations([1,2,3,5], 2) :
+    #   goal_configs.append( [base_task_names[i], base_task_names[j]] )
 
     obs_element_goals = [] ; obs_element_indices = []
     for objects in goal_configs:

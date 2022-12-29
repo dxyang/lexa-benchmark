@@ -120,6 +120,7 @@ class KitchenBase(KitchenTaskRelaxV1):
                 next_obj_obs[..., element_idx - idx_offset] - OBS_ELEMENT_GOALS[element]
             )
             dense += -1 * distance  # reward must be negative distance for RL
+            # print(f"{element}: {distance}")
             complete = distance < BONUS_THRESH
             if complete:
                 completions.append(element)
@@ -186,434 +187,434 @@ class KitchenMicrowaveKettleLightTopLeftBurnerV0(KitchenBase):
     REMOVE_TASKS_WHEN_COMPLETE = True
 
 
-class KitchenHingeSlideBottomLeftBurnerLightV0(KitchenBase):
-    TASK_ELEMENTS = [
-        "hinge cabinet",
-        "slide cabinet",
-        "bottom left burner",
-        "light switch",
-    ]
-    REMOVE_TASKS_WHEN_COMPLETE = True
+# class KitchenHingeSlideBottomLeftBurnerLightV0(KitchenBase):
+#     TASK_ELEMENTS = [
+#         "hinge cabinet",
+#         "slide cabinet",
+#         "bottom left burner",
+#         "light switch",
+#     ]
+#     REMOVE_TASKS_WHEN_COMPLETE = True
 
 
-class KitchenMicrowaveV0(KitchenBase):
-    TASK_ELEMENTS = ["microwave"]
+# class KitchenMicrowaveV0(KitchenBase):
+#     TASK_ELEMENTS = ["microwave"]
 
-    def __init__(self, delta=0, **kwargs):
-        super(KitchenMicrowaveV0, self).__init__(**kwargs)
-        self.step_to_primitive_name = {
-            0: "drop",
-            1: "angled_x_y_grasp",
-            2: "move_backward",
-            3: "no_op",
-            4: "no_op",
-        }
-        if not self.use_combined_action_space and self.control_mode == "primitives":
-            action_low = np.array(
-                [
-                    -np.pi / 6,
-                    -0.3,
-                    0.95,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0.55,
-                    0,
-                    0,
-                    0,
-                    0.6,
-                    0.0,
-                ]
-            )
+#     def __init__(self, delta=0, **kwargs):
+#         super(KitchenMicrowaveV0, self).__init__(**kwargs)
+#         self.step_to_primitive_name = {
+#             0: "drop",
+#             1: "angled_x_y_grasp",
+#             2: "move_backward",
+#             3: "no_op",
+#             4: "no_op",
+#         }
+#         if not self.use_combined_action_space and self.control_mode == "primitives":
+#             action_low = np.array(
+#                 [
+#                     -np.pi / 6,
+#                     -0.3,
+#                     0.95,
+#                     0,
+#                     0,
+#                     0,
+#                     0,
+#                     0,
+#                     0.55,
+#                     0,
+#                     0,
+#                     0,
+#                     0.6,
+#                     0.0,
+#                 ]
+#             )
 
-            action_high = np.array(
-                [
-                    -np.pi / 6,
-                    -0.3,
-                    0.95,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0.55,
-                    0,
-                    0,
-                    0,
-                    0.6,
-                    0.0,
-                ]
-            )
-            action_low -= delta
-            action_high += delta
-            if not self.fixed_schema:
-                act_lower_primitive = np.zeros(self.num_primitives)
-                act_upper_primitive = np.ones(self.num_primitives)
-                action_low = np.concatenate((act_lower_primitive, action_low))
-                action_high = np.concatenate((act_upper_primitive, action_high))
-            self.action_space = Box(action_low, action_high, dtype=np.float32)
-
-
-class KitchenKettleV0(KitchenBase):
-    TASK_ELEMENTS = ["kettle"]
-
-    def __init__(self, delta=0, **kwargs):
-        super(KitchenKettleV0, self).__init__(**kwargs)
-        self.step_to_primitive_name = {
-            0: "drop",
-            1: "angled_x_y_grasp",
-            2: "move_delta_ee_pose",
-            3: "drop",
-            4: "open_gripper",
-        }
-        if not self.use_combined_action_space and self.control_mode == "primitives":
-            action_low = np.array(
-                [
-                    0,
-                    0.15,
-                    0.7,
-                    0.25,
-                    1.1,
-                    0.25,
-                    0,
-                    0,
-                    0.25,
-                    0,
-                    0,
-                    0,
-                    0.0,
-                    0.0,
-                ]
-            )
-
-            action_high = np.array(
-                [
-                    0,
-                    0.15,
-                    0.7,
-                    0.25,
-                    1.1,
-                    0.25,
-                    0,
-                    0,
-                    0.5,
-                    0,
-                    0,
-                    0,
-                    0.0,
-                    0.0,
-                ]
-            )
-            action_low -= delta
-            action_high += delta
-            if not self.fixed_schema:
-                act_lower_primitive = np.zeros(self.num_primitives)
-                act_upper_primitive = np.ones(self.num_primitives)
-                action_low = np.concatenate((act_lower_primitive, action_low))
-                action_high = np.concatenate((act_upper_primitive, action_high))
-            self.action_space = Box(action_low, action_high, dtype=np.float32)
+#             action_high = np.array(
+#                 [
+#                     -np.pi / 6,
+#                     -0.3,
+#                     0.95,
+#                     0,
+#                     0,
+#                     0,
+#                     0,
+#                     0,
+#                     0.55,
+#                     0,
+#                     0,
+#                     0,
+#                     0.6,
+#                     0.0,
+#                 ]
+#             )
+#             action_low -= delta
+#             action_high += delta
+#             if not self.fixed_schema:
+#                 act_lower_primitive = np.zeros(self.num_primitives)
+#                 act_upper_primitive = np.ones(self.num_primitives)
+#                 action_low = np.concatenate((act_lower_primitive, action_low))
+#                 action_high = np.concatenate((act_upper_primitive, action_high))
+#             self.action_space = Box(action_low, action_high, dtype=np.float32)
 
 
-class KitchenBottomLeftBurnerV0(KitchenBase):
-    TASK_ELEMENTS = ["bottom left burner"]
+# class KitchenKettleV0(KitchenBase):
+#     TASK_ELEMENTS = ["kettle"]
 
-    def __init__(self, delta=0.0, **kwargs):
-        super(KitchenBottomLeftBurnerV0, self).__init__(**kwargs)
+#     def __init__(self, delta=0, **kwargs):
+#         super(KitchenKettleV0, self).__init__(**kwargs)
+#         self.step_to_primitive_name = {
+#             0: "drop",
+#             1: "angled_x_y_grasp",
+#             2: "move_delta_ee_pose",
+#             3: "drop",
+#             4: "open_gripper",
+#         }
+#         if not self.use_combined_action_space and self.control_mode == "primitives":
+#             action_low = np.array(
+#                 [
+#                     0,
+#                     0.15,
+#                     0.7,
+#                     0.25,
+#                     1.1,
+#                     0.25,
+#                     0,
+#                     0,
+#                     0.25,
+#                     0,
+#                     0,
+#                     0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
 
-        self.step_to_primitive_name = {
-            0: "lift",
-            1: "angled_x_y_grasp",
-            2: "rotate_about_y_axis",
-            3: "no_op",
-            4: "no_op",
-        }
-        if not self.use_combined_action_space and self.control_mode == "primitives":
-            action_low = np.array(
-                [
-                    0,
-                    0.55,
-                    1.1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    -np.pi / 4,
-                    0.3,
-                    0.0,
-                    0,
-                    0,
-                    0,
-                    0.0,
-                    0.0,
-                ]
-            )
-
-            action_high = np.array(
-                [
-                    0,
-                    0.55,
-                    1.1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    -np.pi / 4,
-                    0.3,
-                    0.0,
-                    0,
-                    0,
-                    0,
-                    0.0,
-                    0.0,
-                ]
-            )
-            action_low -= delta
-            action_high += delta
-            if not self.fixed_schema:
-                act_lower_primitive = np.zeros(self.num_primitives)
-                act_upper_primitive = np.ones(self.num_primitives)
-                action_low = np.concatenate((act_lower_primitive, action_low))
-                action_high = np.concatenate((act_upper_primitive, action_high))
-            self.action_space = Box(action_low, action_high, dtype=np.float32)
-
-
-class KitchenTopLeftBurnerV0(KitchenBase):
-    TASK_ELEMENTS = ["top left burner"]
-
-    def __init__(self, delta=0, **kwargs):
-        super(KitchenTopLeftBurnerV0, self).__init__(**kwargs)
-
-        self.step_to_primitive_name = {
-            0: "lift",
-            1: "angled_x_y_grasp",
-            2: "rotate_about_y_axis",
-            3: "no_op",
-            4: "no_op",
-        }
-        if not self.use_combined_action_space and self.control_mode == "primitives":
-            action_low = np.array(
-                [
-                    0,
-                    0.5,
-                    1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    -np.pi / 4,
-                    0.6,
-                    0.0,
-                    0,
-                    0,
-                    0,
-                    0.0,
-                    0.0,
-                ]
-            )
-
-            action_high = np.array(
-                [
-                    0,
-                    0.5,
-                    1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    -np.pi / 4,
-                    0.6,
-                    0.0,
-                    0,
-                    0,
-                    0,
-                    0.0,
-                    0.0,
-                ]
-            )
-            action_low -= delta
-            action_high += delta
-            if not self.fixed_schema:
-                act_lower_primitive = np.zeros(self.num_primitives)
-                act_upper_primitive = np.ones(self.num_primitives)
-                action_low = np.concatenate((act_lower_primitive, action_low))
-                action_high = np.concatenate((act_upper_primitive, action_high))
-            self.action_space = Box(action_low, action_high, dtype=np.float32)
+#             action_high = np.array(
+#                 [
+#                     0,
+#                     0.15,
+#                     0.7,
+#                     0.25,
+#                     1.1,
+#                     0.25,
+#                     0,
+#                     0,
+#                     0.5,
+#                     0,
+#                     0,
+#                     0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+#             action_low -= delta
+#             action_high += delta
+#             if not self.fixed_schema:
+#                 act_lower_primitive = np.zeros(self.num_primitives)
+#                 act_upper_primitive = np.ones(self.num_primitives)
+#                 action_low = np.concatenate((act_lower_primitive, action_low))
+#                 action_high = np.concatenate((act_upper_primitive, action_high))
+#             self.action_space = Box(action_low, action_high, dtype=np.float32)
 
 
-class KitchenSlideCabinetV0(KitchenBase):
-    TASK_ELEMENTS = ["slide cabinet"]
+# class KitchenBottomLeftBurnerV0(KitchenBase):
+#     TASK_ELEMENTS = ["bottom left burner"]
 
-    def __init__(self, delta=0, **kwargs):
-        super(KitchenSlideCabinetV0, self).__init__(**kwargs)
-        self.step_to_primitive_name = {
-            0: "lift",
-            1: "angled_x_y_grasp",
-            2: "move_right",
-            3: "no_op",
-            4: "no_op",
-        }
-        if not self.use_combined_action_space and self.control_mode == "primitives":
-            action_low = np.array(
-                [
-                    0.0,
-                    0.7,
-                    1.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    1,
-                    0.0,
-                    0.0,
-                    0.6,
-                    0.0,
-                    0.0,
-                    0.0,
-                ]
-            )
+#     def __init__(self, delta=0.0, **kwargs):
+#         super(KitchenBottomLeftBurnerV0, self).__init__(**kwargs)
 
-            action_high = np.array(
-                [
-                    0.0,
-                    0.7,
-                    1.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    1,
-                    0.0,
-                    0.0,
-                    0.6,
-                    0.0,
-                    0.0,
-                    0.0,
-                ]
-            )
-            action_low -= delta
-            action_high += delta
-            if not self.fixed_schema:
-                act_lower_primitive = np.zeros(self.num_primitives)
-                act_upper_primitive = np.ones(self.num_primitives)
-                action_low = np.concatenate((act_lower_primitive, action_low))
-                action_high = np.concatenate((act_upper_primitive, action_high))
-            self.action_space = Box(action_low, action_high, dtype=np.float32)
+#         self.step_to_primitive_name = {
+#             0: "lift",
+#             1: "angled_x_y_grasp",
+#             2: "rotate_about_y_axis",
+#             3: "no_op",
+#             4: "no_op",
+#         }
+#         if not self.use_combined_action_space and self.control_mode == "primitives":
+#             action_low = np.array(
+#                 [
+#                     0,
+#                     0.55,
+#                     1.1,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     -np.pi / 4,
+#                     0.3,
+#                     0.0,
+#                     0,
+#                     0,
+#                     0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
 
-
-class KitchenHingeCabinetV0(KitchenBase):
-    TASK_ELEMENTS = ["hinge cabinet"]
-
-    def __init__(self, delta=0, **kwargs):
-        super(KitchenHingeCabinetV0, self).__init__(**kwargs)
-
-        self.step_to_primitive_name = {
-            0: "lift",
-            1: "angled_x_y_grasp",
-            2: "move_delta_ee_pose",
-            3: "rotate_about_x_axis",
-            4: "no_op",
-        }
-        if not self.use_combined_action_space and self.control_mode == "primitives":
-            action_low = np.array(
-                [
-                    -np.pi / 6,
-                    -0.3,
-                    1.4,
-                    0.5,
-                    -1,
-                    0.0,
-                    0.0,
-                    1,
-                    0.0,
-                    0,
-                    1,
-                    0,
-                    0.3,
-                    1.0,
-                ]
-            )
-
-            action_high = np.array(
-                [
-                    -np.pi / 6,
-                    -0.3,
-                    1.4,
-                    0.5,
-                    -1,
-                    0.0,
-                    0.0,
-                    1,
-                    0.0,
-                    0,
-                    1,
-                    0,
-                    0.3,
-                    1.0,
-                ]
-            )
-            action_low -= delta
-            action_high += delta
-            if not self.fixed_schema:
-                act_lower_primitive = np.zeros(self.num_primitives)
-                act_upper_primitive = np.ones(self.num_primitives)
-                action_low = np.concatenate((act_lower_primitive, action_low))
-                action_high = np.concatenate((act_upper_primitive, action_high))
-            self.action_space = Box(action_low, action_high, dtype=np.float32)
+#             action_high = np.array(
+#                 [
+#                     0,
+#                     0.55,
+#                     1.1,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     -np.pi / 4,
+#                     0.3,
+#                     0.0,
+#                     0,
+#                     0,
+#                     0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+#             action_low -= delta
+#             action_high += delta
+#             if not self.fixed_schema:
+#                 act_lower_primitive = np.zeros(self.num_primitives)
+#                 act_upper_primitive = np.ones(self.num_primitives)
+#                 action_low = np.concatenate((act_lower_primitive, action_low))
+#                 action_high = np.concatenate((act_upper_primitive, action_high))
+#             self.action_space = Box(action_low, action_high, dtype=np.float32)
 
 
-class KitchenLightSwitchV0(KitchenBase):
-    TASK_ELEMENTS = ["light switch"]
+# class KitchenTopLeftBurnerV0(KitchenBase):
+#     TASK_ELEMENTS = ["top left burner"]
 
-    def __init__(self, delta=0, **kwargs):
-        super(KitchenLightSwitchV0, self).__init__(**kwargs)
-        self.step_to_primitive_name = {
-            0: "close_gripper",
-            1: "lift",
-            2: "move_right",
-            3: "move_forward",
-            4: "move_left",
-        }
-        if not self.use_combined_action_space and self.control_mode == "primitives":
-            action_low = np.array(
-                [
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.6,
-                    0.0,
-                    0.45,
-                    0.45,
-                    1.25,
-                    0.0,
-                    0.0,
-                ]
-            )
+#     def __init__(self, delta=0, **kwargs):
+#         super(KitchenTopLeftBurnerV0, self).__init__(**kwargs)
 
-            action_high = np.array(
-                [
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.6,
-                    0.0,
-                    0.45,
-                    0.45,
-                    1.25,
-                    0.0,
-                    0.0,
-                ]
-            )
-            action_low -= delta
-            action_high += delta
-            if not self.fixed_schema:
-                act_lower_primitive = np.zeros(self.num_primitives)
-                act_upper_primitive = np.ones(self.num_primitives)
-                action_low = np.concatenate((act_lower_primitive, action_low))
-                action_high = np.concatenate((act_upper_primitive, action_high))
-            self.action_space = Box(action_low, action_high, dtype=np.float32)
+#         self.step_to_primitive_name = {
+#             0: "lift",
+#             1: "angled_x_y_grasp",
+#             2: "rotate_about_y_axis",
+#             3: "no_op",
+#             4: "no_op",
+#         }
+#         if not self.use_combined_action_space and self.control_mode == "primitives":
+#             action_low = np.array(
+#                 [
+#                     0,
+#                     0.5,
+#                     1,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     -np.pi / 4,
+#                     0.6,
+#                     0.0,
+#                     0,
+#                     0,
+#                     0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+
+#             action_high = np.array(
+#                 [
+#                     0,
+#                     0.5,
+#                     1,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     -np.pi / 4,
+#                     0.6,
+#                     0.0,
+#                     0,
+#                     0,
+#                     0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+#             action_low -= delta
+#             action_high += delta
+#             if not self.fixed_schema:
+#                 act_lower_primitive = np.zeros(self.num_primitives)
+#                 act_upper_primitive = np.ones(self.num_primitives)
+#                 action_low = np.concatenate((act_lower_primitive, action_low))
+#                 action_high = np.concatenate((act_upper_primitive, action_high))
+#             self.action_space = Box(action_low, action_high, dtype=np.float32)
+
+
+# class KitchenSlideCabinetV0(KitchenBase):
+#     TASK_ELEMENTS = ["slide cabinet"]
+
+#     def __init__(self, delta=0, **kwargs):
+#         super(KitchenSlideCabinetV0, self).__init__(**kwargs)
+#         self.step_to_primitive_name = {
+#             0: "lift",
+#             1: "angled_x_y_grasp",
+#             2: "move_right",
+#             3: "no_op",
+#             4: "no_op",
+#         }
+#         if not self.use_combined_action_space and self.control_mode == "primitives":
+#             action_low = np.array(
+#                 [
+#                     0.0,
+#                     0.7,
+#                     1.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     1,
+#                     0.0,
+#                     0.0,
+#                     0.6,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+
+#             action_high = np.array(
+#                 [
+#                     0.0,
+#                     0.7,
+#                     1.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     1,
+#                     0.0,
+#                     0.0,
+#                     0.6,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+#             action_low -= delta
+#             action_high += delta
+#             if not self.fixed_schema:
+#                 act_lower_primitive = np.zeros(self.num_primitives)
+#                 act_upper_primitive = np.ones(self.num_primitives)
+#                 action_low = np.concatenate((act_lower_primitive, action_low))
+#                 action_high = np.concatenate((act_upper_primitive, action_high))
+#             self.action_space = Box(action_low, action_high, dtype=np.float32)
+
+
+# class KitchenHingeCabinetV0(KitchenBase):
+#     TASK_ELEMENTS = ["hinge cabinet"]
+
+#     def __init__(self, delta=0, **kwargs):
+#         super(KitchenHingeCabinetV0, self).__init__(**kwargs)
+
+#         self.step_to_primitive_name = {
+#             0: "lift",
+#             1: "angled_x_y_grasp",
+#             2: "move_delta_ee_pose",
+#             3: "rotate_about_x_axis",
+#             4: "no_op",
+#         }
+#         if not self.use_combined_action_space and self.control_mode == "primitives":
+#             action_low = np.array(
+#                 [
+#                     -np.pi / 6,
+#                     -0.3,
+#                     1.4,
+#                     0.5,
+#                     -1,
+#                     0.0,
+#                     0.0,
+#                     1,
+#                     0.0,
+#                     0,
+#                     1,
+#                     0,
+#                     0.3,
+#                     1.0,
+#                 ]
+#             )
+
+#             action_high = np.array(
+#                 [
+#                     -np.pi / 6,
+#                     -0.3,
+#                     1.4,
+#                     0.5,
+#                     -1,
+#                     0.0,
+#                     0.0,
+#                     1,
+#                     0.0,
+#                     0,
+#                     1,
+#                     0,
+#                     0.3,
+#                     1.0,
+#                 ]
+#             )
+#             action_low -= delta
+#             action_high += delta
+#             if not self.fixed_schema:
+#                 act_lower_primitive = np.zeros(self.num_primitives)
+#                 act_upper_primitive = np.ones(self.num_primitives)
+#                 action_low = np.concatenate((act_lower_primitive, action_low))
+#                 action_high = np.concatenate((act_upper_primitive, action_high))
+#             self.action_space = Box(action_low, action_high, dtype=np.float32)
+
+
+# class KitchenLightSwitchV0(KitchenBase):
+#     TASK_ELEMENTS = ["light switch"]
+
+#     def __init__(self, delta=0, **kwargs):
+#         super(KitchenLightSwitchV0, self).__init__(**kwargs)
+#         self.step_to_primitive_name = {
+#             0: "close_gripper",
+#             1: "lift",
+#             2: "move_right",
+#             3: "move_forward",
+#             4: "move_left",
+#         }
+#         if not self.use_combined_action_space and self.control_mode == "primitives":
+#             action_low = np.array(
+#                 [
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.6,
+#                     0.0,
+#                     0.45,
+#                     0.45,
+#                     1.25,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+
+#             action_high = np.array(
+#                 [
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.0,
+#                     0.6,
+#                     0.0,
+#                     0.45,
+#                     0.45,
+#                     1.25,
+#                     0.0,
+#                     0.0,
+#                 ]
+#             )
+#             action_low -= delta
+#             action_high += delta
+#             if not self.fixed_schema:
+#                 act_lower_primitive = np.zeros(self.num_primitives)
+#                 act_upper_primitive = np.ones(self.num_primitives)
+#                 action_low = np.concatenate((act_lower_primitive, action_low))
+#                 action_high = np.concatenate((act_upper_primitive, action_high))
+#             self.action_space = Box(action_low, action_high, dtype=np.float32)

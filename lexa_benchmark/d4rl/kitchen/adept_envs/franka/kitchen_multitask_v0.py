@@ -282,7 +282,7 @@ class KitchenV0(robot_env.RobotEnv):
             self.action_space = spaces.Box(act_lower, act_upper)
 
         if self.control_mode == "end_effector":
-            # 3 for xyz pose, 3 for xyz angle, 1 for gripper 
+            # 3 for xyz pose, 3 for xyz angle, 1 for gripper
             act_lower = -1 * np.ones((7,))
             act_upper = 1 * np.ones((7,))
             self.action_space = spaces.Box(act_lower, act_upper)
@@ -523,7 +523,7 @@ class KitchenV0(robot_env.RobotEnv):
         repeats=300,
         render_every_step=False,
         render_mode="rgb_array",
-        render_im_shape=(1000, 1000),  
+        render_im_shape=(1000, 1000),
     ):
         # clamp the pose within workspace limits:
         gripper = self.sim.data.qpos[7:9]
@@ -548,7 +548,7 @@ class KitchenV0(robot_env.RobotEnv):
                 )
             )
             self.sim.step()
-            
+
     def rotate_about_x_axis(
         self,
         angle,
@@ -566,7 +566,7 @@ class KitchenV0(robot_env.RobotEnv):
             render_mode=render_mode,
             render_im_shape=render_im_shape,
         )
-    
+
     def rotate_about_y_axis(
         self,
         angle,
@@ -778,8 +778,8 @@ class KitchenV0(robot_env.RobotEnv):
         render_mode="rgb_array",
         render_im_shape=(1000, 1000),
     ):
-        
-        
+
+
         if self.control_mode in [
             "joint_position",
             "joint_velocity",
@@ -791,7 +791,7 @@ class KitchenV0(robot_env.RobotEnv):
                 if not self.initializing:
                     rotation = self.quat_to_rpy(self.sim.data.body_xquat[10]) - np.array(a[3:6])
                     for _ in range(self.frame_skip):
-                        
+
                         quat = self.rpy_to_quat(rotation)
                         quat_delta = self.convert_xyzw_to_wxyz(quat) - self.sim.data.body_xquat[10]
                         self._set_action(np.concatenate([ a[:3], quat_delta, [a[-1], -a[-1]] ]))
