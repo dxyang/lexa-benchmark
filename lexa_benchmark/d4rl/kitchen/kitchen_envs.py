@@ -57,6 +57,8 @@ class KitchenBase(KitchenTaskRelaxV1):
                 )
                 self.action_space = Box(act_lower, act_upper, dtype=np.float32)
 
+        self.proprioception_set = False
+
     def _get_obs(self):
         t, qp, qv, obj_qp, obj_qv = self.robot.get_obs(
             self, robot_noise_ratio=self.robot_noise_ratio
@@ -70,6 +72,7 @@ class KitchenBase(KitchenTaskRelaxV1):
         self.obs_dict["obj_qv"] = obj_qv
         self.obs_dict["goal"] = self.goal
         if self.image_obs:
+            assert False # this code path isn't executed
             img = self.render(mode="rgb_array")
             img = img.transpose(2, 0, 1).flatten()
             if self.proprioception:
@@ -89,9 +92,25 @@ class KitchenBase(KitchenTaskRelaxV1):
             return img
 
         else:
+            proprioceptive_obs = np.concatenate(
+                (
+                    qp,
+                    self.get_ee_pose(),
+                    self.get_ee_quat(),
+                )
+            )
+            self.proprioception_set = True
+            self._proprioception_obs = proprioceptive_obs
+
             return np.concatenate(
                 [self.obs_dict["qp"], self.obs_dict["obj_qp"], self.obs_dict["goal"]]
             )
+
+    def _get_proprioception_obs(self):
+        assert self.proprioception_set
+        self.proprioception_set = False
+        return self._proprioception_obs
+
 
     def _get_task_goal(self):
         new_goal = np.zeros_like(self.goal)

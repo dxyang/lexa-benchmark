@@ -51,9 +51,9 @@ class KitchenEnv(BenchEnv):
   def get_goals(self):
     return self.goals
 
-  def _get_obs(self, state):
+  def _get_obs(self, state, ppc):
     image = self._env.render('rgb_array', width=self._env.imwidth, height =self._env.imheight)
-    obs = {'image': image, 'state': state, 'image_goal': self.render_goal(), 'goal': self.goal}
+    obs = {'image': image, 'state': state, 'image_goal': self.render_goal(), 'goal': self.goal, 'ppc': ppc}
 
     if self.log_per_goal:
       for i, goal_idx in enumerate(self.goals):
@@ -72,11 +72,12 @@ class KitchenEnv(BenchEnv):
     total_reward = 0.0
     for step in range(self._action_repeat):
       state, reward, done, info = self._env.step(action)
+      ppc = self._env._get_proprioception_obs()
       reward = self.compute_reward()
       total_reward += reward
       if done:
         break
-    obs = self._get_obs(state)
+    obs = self._get_obs(state, ppc)
     for k, v in obs.items():
       if 'metric_' in k:
         info[k] = v
@@ -153,8 +154,9 @@ class KitchenEnv(BenchEnv):
     with self.LOCK:
       self._env.TASK_ELEMENTS = [goal_to_task_element(self.goal)]
       state = self._env.reset()
+      ppc = self._env._get_proprioception_obs()
     self.rendered_goal = False
-    return self._get_obs(state)
+    return self._get_obs(state, ppc)
 
 def get_kitchen_benchmark_goals():
 
