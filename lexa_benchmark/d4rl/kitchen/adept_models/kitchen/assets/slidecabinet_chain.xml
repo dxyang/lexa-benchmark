@@ -18,6 +18,7 @@
             <geom material="M_slide_metal" pos="-0.183 -0.123 0" size="0.022 0.159" type="cylinder"/>
             <geom pos="0 -.02 0" size="0.225 0.03 0.195" type="box"/>
 
+            <site name="slidecab" pos="0 0 0" size="0.01" />
             <geom class="slide_collision" pos="0 -.02 0" size="0.225 0.03 0.195" type="box" mass=".2"/>
             <geom class="slide_collision" euler="1.57 0 0" pos="-0.183 -0.06 -0.114" size="0.019 0.053 0.019" type="cylinder" mass=".02"/>
             <geom class="slide_collision" euler="1.57 0 0" pos="-0.183 -0.06 0.114" size="0.019 0.053 0.019" type="cylinder" mass=".02"/>

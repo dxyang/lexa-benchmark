@@ -66,7 +66,7 @@ class KitchenBase(KitchenTaskRelaxV1):
 
         self.obs_dict = {}
         self.obs_dict["t"] = t
-        self.obs_dict["qp"] = qp
+        self.obs_dict["qp"] = qp # size 9, 7 joints + fingers
         self.obs_dict["qv"] = qv
         self.obs_dict["obj_qp"] = obj_qp
         self.obs_dict["obj_qv"] = obj_qv

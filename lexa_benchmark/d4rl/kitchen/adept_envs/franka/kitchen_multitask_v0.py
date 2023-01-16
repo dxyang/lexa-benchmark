@@ -858,6 +858,11 @@ class KitchenV0(robot_env.RobotEnv):
 
     def reset_model(self):
         reset_pos = self.init_qpos[:].copy()
+        add_noise = True
+        if add_noise:
+            init_noise_magnitude_rads = 0.1
+            joint_init_noise_rads = (np.random.rand(7,) * 2 - 1) * init_noise_magnitude_rads
+            reset_pos[:7] += joint_init_noise_rads
         reset_vel = self.init_qvel[:].copy()
         self.robot.reset(self, reset_pos, reset_vel)
         self.sim.forward()

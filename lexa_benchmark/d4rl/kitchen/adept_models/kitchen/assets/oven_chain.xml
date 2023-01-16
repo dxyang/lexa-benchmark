@@ -78,6 +78,7 @@
             <geom material="oven_burner" size="0.1 0.01" type="cylinder" group="1"/>
         </body>
         <body name="knob 4" euler="1.57 0 0" pos="-0.271 0.22 1.357">
+            <site name="burner_knob" pos="0 0 0" size="0.01" />
             <joint name="knob_Joint_4" axis="0 0 1" type="hinge" limited="true" range="-1.57 0"/>
             <geom type="box" pos="0 0 .038" size=".014 .048 .018"/>
             <geom type="cylinder" pos="0 0 .013" size=".05 .008"/>
@@ -99,6 +100,7 @@
         <body name="lightswitchbaseroot" pos="-0.4 -0.2473 -0.05" >
             <geom mesh="lightswitchbase" pos="0 -0.0123 0" euler="-1.57 0 0"/>
             <body name="lightswitchroot">
+                <site name="lightswitch" pos="0 0 0" size="0.01" />
                 <inertial pos="-0.0046 0.35 0.0131" mass=".1" diaginertia="0.001 0.001 0.001"/>
                 <joint axis="0 0 1" limited="true" name="lightswitch_joint" frictionloss="1" range="-.7 0"/>
                 <geom pos="0.0252 -0.06 0" euler="-1.57 -.4 0" size="0.02 0.035" type="capsule"/>

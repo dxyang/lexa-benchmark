@@ -22,6 +22,22 @@ def goal_to_task_element(goal_idx: int):
   else:
     assert False
 
+def goal_to_site_str(goal_idx: int):
+  if goal_idx == 0:
+    return 'burner_knob' #'bottom_burner'
+  elif goal_idx == 1:
+    return 'lightswitch' #'light_switch'
+  elif goal_idx == 2:
+    return 'slidecab' #'slide_cabinet'
+  elif goal_idx == 3:
+    return 'hingedoor' #'hinge_cabinet'
+  elif goal_idx == 4:
+    return 'microwave_door'
+  elif goal_idx == 5:
+    return 'kettle_obj'
+  else:
+    assert False
+
 class KitchenEnv(BenchEnv):
   def __init__(self, action_repeat=1, task_num=0, use_goal_idx=False, log_per_goal=False,  control_mode='end_effector', width=64):
 
@@ -83,7 +99,7 @@ class KitchenEnv(BenchEnv):
         info[k] = v
     return obs, total_reward, done, info
 
-  def compute_reward(self, goal=None):
+  def compute_reward(self, goal=None, add_eef_to_obj_term: bool = True):
     if goal is None:
       goal = self.goal
     qpos = self._env.sim.data.qpos.copy()
@@ -92,7 +108,18 @@ class KitchenEnv(BenchEnv):
         import pdb; pdb.set_trace() # why would this happen?
         return  -np.linalg.norm(qpos[self.obs_element_indices[goal]][9:] - self.obs_element_goals[goal][9:])
     else:
-        return -np.linalg.norm(qpos[self.obs_element_indices[goal]] - self.obs_element_goals[goal])
+        # norm b/w indices of interest
+        element_reward = -np.linalg.norm(qpos[self.obs_element_indices[goal]] - self.obs_element_goals[goal])
+
+        # move hand to object area
+        eef_pos = self._env.get_ee_pose()
+        obj_site_str = goal_to_site_str(self.goal_idx)
+        obj_pos = self._env.get_site_xpos(obj_site_str)
+        obj_dist = -np.linalg.norm(obj_pos - eef_pos)
+
+        reward = obj_dist + 10 * element_reward
+        # print(f"{obj_dist}, {element_reward}")
+        return reward
 
   def compute_success(self, goal = None):
 
@@ -197,3 +224,4 @@ def get_kitchen_benchmark_goals():
         obs_element_indices.append(_goal_idxs)
 
     return obs_element_goals, obs_element_indices, goal_configs
+
