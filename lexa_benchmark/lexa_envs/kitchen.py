@@ -110,10 +110,10 @@ class KitchenEnv(BenchEnv):
     else:
       add_distance_to_reward = False
 
-      if add_distance_to_reward:
-        # norm b/w indices of interest
-        element_reward = -np.linalg.norm(qpos[self.obs_element_indices[goal]] - self.obs_element_goals[goal])
+      # norm b/w indices of interest
+      element_reward = -np.linalg.norm(qpos[self.obs_element_indices[goal]] - self.obs_element_goals[goal])
 
+      if add_distance_to_reward:
         # move hand to object area
         eef_pos = self._env.get_ee_pose()
         obj_site_str = goal_to_site_str(self.goal_idx)
