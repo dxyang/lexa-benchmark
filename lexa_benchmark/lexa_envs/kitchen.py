@@ -105,9 +105,12 @@ class KitchenEnv(BenchEnv):
     qpos = self._env.sim.data.qpos.copy()
 
     if len(self.obs_element_indices[goal]) > 9 :
-        import pdb; pdb.set_trace() # why would this happen?
-        return  -np.linalg.norm(qpos[self.obs_element_indices[goal]][9:] - self.obs_element_goals[goal][9:])
+      import pdb; pdb.set_trace() # why would this happen?
+      return  -np.linalg.norm(qpos[self.obs_element_indices[goal]][9:] - self.obs_element_goals[goal][9:])
     else:
+      add_distance_to_reward = False
+
+      if add_distance_to_reward:
         # norm b/w indices of interest
         element_reward = -np.linalg.norm(qpos[self.obs_element_indices[goal]] - self.obs_element_goals[goal])
 
@@ -119,7 +122,9 @@ class KitchenEnv(BenchEnv):
 
         reward = obj_dist + 10 * element_reward
         # print(f"{obj_dist}, {element_reward}")
-        return reward
+      else:
+        reward = element_reward
+      return reward
 
   def compute_success(self, goal = None):
 
@@ -186,7 +191,41 @@ class KitchenEnv(BenchEnv):
     return self._get_obs(state, ppc)
 
 def get_kitchen_benchmark_goals():
-
+    '''
+        self.init_qpos = np.array(
+            [
+            0    1.48388023e-01,
+                -1.76848573e00,
+                1.84390296e00,
+                -2.47685760e00,
+                2.60252026e-01,
+                7.12533105e-01,
+                1.59515394e00,
+                4.79267505e-02,
+                3.71350919e-02,
+            bb    -2.66279850e-04,
+        10  bb      -5.18043486e-05,
+                3.12877220e-05,
+                -4.51199853e-05,
+                -3.90842156e-06,
+                -4.22629655e-05,
+                6.28065475e-05,
+                4.04984708e-05,
+            ls    4.62730939e-04,
+            ls    -2.26906415e-04,
+            sc    -4.65501369e-04,
+        20  hc    -6.44129196e-03,
+            hc    -1.77048263e-03,
+            mw    1.08009684e-03,
+            k    -2.69397440e-01,
+            k    3.50383255e-01,
+            k    1.61944683e00,
+                1.00618764e00,
+                4.06395120e-03,
+                -6.62095997e-03,
+                -2.68278933e-04,
+            ]
+    '''
     object_goal_vals = {'bottom_burner' :  [-0.88, -0.01],
                           'light_switch' :  [ -0.69, -0.05],
                           'slide_cabinet':  [0.37],
